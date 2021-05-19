@@ -2,7 +2,7 @@ version: '3.7'
 
 volumes:
   kong_data: {}
-  keycloak-datastore:
+  keycloak_data:
 
 networks:
   kong-net:
@@ -112,11 +112,34 @@ services:
 
   keycloak-service:
     image: quay.io/keycloak/keycloak:13.0.0
-    environment: 
-        KEYCLOAK_USER: admin
-        KEYCLOAK_PASSWORD: password
     ports: 
         - "8080:8080"
+    networks:
+        - keycloak-net
+    depends_on:
+        - keycloak-database
+    environment:
+        KEYCLOAK_USER: admin
+        KEYCLOAK_PASSWORD: password
+        DB_VENDOR: mysql
+        DB_DATABASE: keycloak
+        DB_USER: keycloak
+        DB_PASSWORD: password
+        DB_ADDR: keycloak-database
+
+  keycloak-database:
+    image: mysql
+    networks:
+      - keycloak-net
+    environment:
+        MYSQL_DATABASE: keycloak
+        MYSQL_USER: keycloak
+        MYSQL_PASSWORD: password
+        MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - keycloak_data:/var/lib/keycloak/data
+
+
 
 
 

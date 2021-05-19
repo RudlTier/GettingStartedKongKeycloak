@@ -4,7 +4,7 @@ BaseURL=http://localhost:8001
 ###    Services     ###
 #######################
 # List all Services
-curl -i -X GET $BaseURL/services
+curl -i -X GET $BaseURL/services | jq '.'
 # Create a Kong Service
 curl -i -X POST $BaseURL/services/ \
     -d "name=mockbin-service" \
